@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  bot:
+    build: .
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CLIENT_ID=${CLIENT_ID}
+      - GUILD_ID=${GUILD_ID}
+      - RECORDING_NOTICE_CHANNEL_ID=${RECORDING_NOTICE_CHANNEL_ID}
+      - BUFFER_MINUTES=${BUFFER_MINUTES}
+      - OUTPUT_FORMAT=${OUTPUT_FORMAT}
+      - S3_UPLOAD=${S3_UPLOAD}
+      - S3_BUCKET=${S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
