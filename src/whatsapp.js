@@ -9,6 +9,9 @@ const WHATSAPP_NOTIFY_NUMBER = process.env.WHATSAPP_NOTIFY_NUMBER;
 // --- WhatsApp client ---
 const whatsapp = new Client({
     authStrategy: new LocalAuth(),
+    puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
 });
 
 whatsapp.on('qr', qr => {
