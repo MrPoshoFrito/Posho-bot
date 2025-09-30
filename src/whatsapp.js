@@ -1,5 +1,5 @@
 // --- WhatsApp imports ---
-import qrcode from 'qrcode-terminal';
+import { AttachmentBuilder } from 'discord.js';
 import QRCode from 'qrcode';
 import pkg from 'whatsapp-web.js';
 const { Client, LocalAuth } = pkg;
@@ -17,13 +17,9 @@ const whatsapp = new Client({
 
 whatsapp.on("qr", async (qr) => {
     try {
-        // Generate QR as buffer
         const qrBuffer = await QRCode.toBuffer(qr);
-
-        // Create an attachment for Discord
         const attachment = new AttachmentBuilder(qrBuffer, { name: "whatsapp-qr.png" });
 
-        // Pick a text channel where you want to send it
         const channel = discordClient.channels.cache.get(process.env.RECORDING_NOTICE_CHANNEL_ID);
         if (channel) {
             channel.send({
