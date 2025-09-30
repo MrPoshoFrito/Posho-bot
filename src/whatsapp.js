@@ -1,6 +1,3 @@
-// --- WhatsApp imports ---
-import { AttachmentBuilder } from 'discord.js';
-import QRCode from 'qrcode';
 import pkg from 'whatsapp-web.js';
 const { Client, LocalAuth } = pkg;
 import dotenv from 'dotenv';
@@ -15,23 +12,9 @@ const whatsapp = new Client({
     }
 });
 
-whatsapp.on("qr", async (qr) => {
-    try {
-        const qrBuffer = await QRCode.toBuffer(qr);
-        const attachment = new AttachmentBuilder(qrBuffer, { name: "whatsapp-qr.png" });
-
-        const channel = discordClient.channels.cache.get(process.env.RECORDING_NOTICE_CHANNEL_ID);
-        if (channel) {
-            channel.send({
-                content: "📲 Scan this QR code to connect WhatsApp:",
-                files: [attachment],
-            });
-        } else {
-            console.error("QR_CHANNEL_ID is not valid or bot has no access.");
-        }
-    } catch (err) {
-        console.error("Failed to generate QR for Discord:", err);
-    }
+whatsapp.on("qr", (qr) => {
+    console.log("WhatsApp QR data (copy and paste into any QR code generator):");
+    console.log(qr);
 });
 
 whatsapp.on('ready', () => {
