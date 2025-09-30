@@ -1,5 +1,6 @@
 // --- WhatsApp imports ---
 import qrcode from 'qrcode-terminal';
+import QRCode from 'qrcode';
 import pkg from 'whatsapp-web.js';
 const { Client, LocalAuth } = pkg;
 import dotenv from 'dotenv';
@@ -14,9 +15,15 @@ const whatsapp = new Client({
     }
 });
 
-whatsapp.on('qr', qr => {
-    console.log('Scan this QR code with WhatsApp:');
-    qrcode.generate(qr, { small: true });
+whatsapp.on('qr', (qr) => {
+  console.log("Scan this QR string:", qr);
+  qrcode.generate(qr, { small: true });
+  QRCode.toFile("whatsapp-qr.png", qr, {
+    color: { dark: '#000', light: '#FFF' }
+  }, (err) => {
+    if (err) console.error("QR save failed:", err);
+    else console.log("QR code saved to whatsapp-qr.png");
+  });
 });
 
 whatsapp.on('ready', () => {
