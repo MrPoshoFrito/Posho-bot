@@ -15,15 +15,27 @@ const whatsapp = new Client({
     }
 });
 
-whatsapp.on('qr', (qr) => {
-  console.log("Scan this QR string:", qr);
-  qrcode.generate(qr, { small: true });
-  QRCode.toFile("whatsapp-qr.png", qr, {
-    color: { dark: '#000', light: '#FFF' }
-  }, (err) => {
-    if (err) console.error("QR save failed:", err);
-    else console.log("QR code saved to whatsapp-qr.png");
-  });
+whatsapp.on("qr", async (qr) => {
+    try {
+        // Generate QR as buffer
+        const qrBuffer = await QRCode.toBuffer(qr);
+
+        // Create an attachment for Discord
+        const attachment = new AttachmentBuilder(qrBuffer, { name: "whatsapp-qr.png" });
+
+        // Pick a text channel where you want to send it
+        const channel = discordClient.channels.cache.get(process.env.RECORDING_NOTICE_CHANNEL_ID);
+        if (channel) {
+            channel.send({
+                content: "📲 Scan this QR code to connect WhatsApp:",
+                files: [attachment],
+            });
+        } else {
+            console.error("QR_CHANNEL_ID is not valid or bot has no access.");
+        }
+    } catch (err) {
+        console.error("Failed to generate QR for Discord:", err);
+    }
 });
 
 whatsapp.on('ready', () => {
